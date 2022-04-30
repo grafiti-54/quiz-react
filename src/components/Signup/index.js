@@ -1,12 +1,16 @@
 import React, { useState, useContext } from "react";
-import { FirebaseContext } from '../Firebase';
+import {Link} from 'react-router-dom';
+import { FirebaseContext } from '../Firebase'; 
+import {useNavigate} from "react-router-dom" //pour pouvoir utiliser la navigation entre les pages
 
 const Signup = () => {
+
+  //initialisation de la variable pour la redirection lorsque le formulaire
+  const navigate = useNavigate();
 
   //recuperation des methodes de firebase pour s'inscrire se connecter et se deconnecter
   const firebase = useContext(FirebaseContext);
   //console.log(firebase);
-
 
   //recuperation des données du formulaire via onChange dans les inputs du formulaire
   const data = {
@@ -38,6 +42,9 @@ const Signup = () => {
     .then(user => {
       //ici l'inscription est réussie
       setloginData({...data}); // on réinitialise les données du formulaire pour les vider
+      //redirection vers la page souhaité 
+      navigate("/welcome"); 
+      
     })
     .catch(error => {
       setError(error)
@@ -108,6 +115,9 @@ const Signup = () => {
 
               {btn}
             </form>
+            <div className="linkContainer">
+              <Link to="/login" className="simpleLink">Déjà inscrit? Connectez-vous.</Link>
+            </div>
           </div>
         </div>
       </div>
