@@ -16,9 +16,9 @@ function App() {
   return (
     <Router>
       <Header />
-
+      
       <Routes>
-        <Route exact path="/" element={<Landing />} />
+        <Route exact path="/" element={<Landing/>} />
         <Route exact path="/welcome" element={<Welcome/>} />
         <Route exact path="/login" element={<Login/>} />
         <Route exact path="/signup" element={<Signup/>} />
