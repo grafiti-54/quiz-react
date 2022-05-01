@@ -1,8 +1,8 @@
 import app from 'firebase/compat/app';
 
 //import * as firebase from 'firebase'
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
+import 'firebase/compat/auth'; // authentification de firebase
+import 'firebase/compat/firestore'; // base de données
 
 
 
@@ -18,8 +18,8 @@ const config = {
   class Firebase {
     constructor() {
         app.initializeApp(config);
-        this.auth = app.auth();
-        this.db = app.firestore()
+        this.auth = app.auth(); // authentification de firebase
+        this.db = app.firestore() // base de données de firebase
     }
 
     // inscription
@@ -35,8 +35,9 @@ const config = {
 
     // Récupérer le mot de passe
     passwordReset = email => this.auth.sendPasswordResetEmail(email); 
+    
 
-    // firestore
+    // firestore recupération des données id de l'utilisateur
     user = uid => this.db.doc(`users/${uid}`);
 }
 

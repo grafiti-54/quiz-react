@@ -4,27 +4,47 @@ import { useNavigate } from "react-router-dom"; //pour pouvoir utiliser la navig
 import Logout from "../Logout";
 import Quiz from "../Quiz";
 
-
 const Welcome = () => {
-
   //recuperation des methodes de firebase pour s'inscrire se connecter et se deconnecter
   const firebase = useContext(FirebaseContext);
 
   //gestion de l'acces de l'utilisateur a la page uniquement si il est connecté
   const [userSession, setUserSession] = useState(null);
 
+  //recupération des informations de l'utilisateur
+  const [userData, setUserData] = useState({});
+
   //initialisation de la variable pour la redirection lorsque le formulaire
   const navigate = useNavigate();
 
   useEffect(() => {
     //verification de la session de l'utilisateur
-    let listener = firebase.auth.onAuthStateChanged(user => {
+    let listener = firebase.auth.onAuthStateChanged((user) => {
       user ? setUserSession(user) : navigate("/"); //redirection vers la page souhaité si l'utilisateur n'est pas identifié
-    })
+    });
+
+    //condition pour recuperer les données de l'utilisateur
+    //on ne recupere les données de l'utilisateur que si il est connecté
+    if (userSession !== null) {
+      //recuperation des données de l'utilisateur
+      firebase
+        .user(userSession.uid)
+        .get()
+        .then((doc) => {
+          if (doc && doc.exists) {
+            const myData = doc.data();
+            setUserData(myData);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
     return () => {
-      listener()
+      listener();
     };
-  }, []);
+  }, [userSession]);
 
   return userSession === null ? (
     <Fragment>
@@ -35,7 +55,7 @@ const Welcome = () => {
     <div className="quiz-bg">
       <div className="container">
         <Logout />
-        <Quiz />
+        <Quiz userData={userData} />
       </div>
     </div>
   );

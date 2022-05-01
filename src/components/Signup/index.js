@@ -37,9 +37,16 @@ const Signup = () => {
   //function lors de la validation du formulaire
   const handleSubmit = (e) => {
     e.preventDefault(); // on empeche le rechargement de la page
-    const  { email, password } = loginData; //destructuration des données que l'on souhaite recuperer du formulaire
+    const  { email, password, pseudo } = loginData; //destructuration des données que l'on souhaite recuperer du formulaire
     firebase.signupUser(email, password) // recupération des données du formulaire depuis la variable data
-    .then(user => {
+    //recupération des données du formulaire pour creer un utilisateur dans la base de données de firebase
+    .then(authUser => {
+      return firebase.user(authUser.user.uid).set({
+        pseudo: pseudo,
+        email: email,
+      }) //recuperation de l'id de l'utilisateur
+    })
+    .then(() => {
       //ici l'inscription est réussie
       setloginData({...data}); // on réinitialise les données du formulaire pour les vider
       //redirection vers la page souhaité 
