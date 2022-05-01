@@ -101,7 +101,11 @@ const Login = () => {
             </form>
             <div className="linkContainer">
               <Link to="/signup" className="simpleLink">
-                <pre>Nouveau sur Marvel quiz ?  Inscrivez-vous maintenant! </pre>
+                <p>Nouveau sur Marvel quiz ?  Inscrivez-vous maintenant! </p>
+              </Link>
+  
+              <Link to="/forgetpassword" className="simpleLink">
+                <p>Mot de passe oublié ? </p>
               </Link>
             </div>
           </div>
