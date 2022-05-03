@@ -9,6 +9,7 @@ import Signup from "../Signup";
 import ErrorPage from "../ErrorPage";
 import ForgetPassword from "../ForgetPassword";
 import "../../App.css";
+import {IconContext} from "react-icons"; // importation des logos dans un provider pour pouvoir les utiliser dans tout le projet
 
 // Importer  la dependance pour faire le router depuis la console npm install --save react-router-dom
 //puis faire l'import
@@ -16,6 +17,7 @@ import "../../App.css";
 function App() {
   return (
     <Router>
+    <IconContext.Provider value={{ style: {verticalAlign: 'middle'}}}>
       <Header />
       
       <Routes>
@@ -28,6 +30,7 @@ function App() {
       </Routes>
 
       <Footer />
+      </IconContext.Provider>
     </Router>
   );
 }
