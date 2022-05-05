@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import { FirebaseContext } from "../Firebase";
 import { useNavigate } from "react-router-dom"; //pour pouvoir utiliser la navigation entre les pages
+import ReactTooltip from 'react-tooltip'; // message d'information sur le bouton de deconnexion
+// voir data-tip="hello world" dans <span className="slider round" data-tip="deconnexion"></span>
 
 const Logout = () => {
 
@@ -31,8 +33,12 @@ const Logout = () => {
     <div className="logoutContainer">
       <label className="switch">
         <input onChange={handleChange} type="checkbox" checked={checked} />
-        <span className="slider round"></span>
+        <span className="slider round" data-tip="Déconnexion"></span>
       </label>
+      <ReactTooltip 
+        place="left"
+        effect="solid"
+      />
     </div>
   );
 };

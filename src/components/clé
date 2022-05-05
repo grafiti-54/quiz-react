@@ -1,0 +1,25 @@
+http://gateway.marvel.com/v1/public/characters?
+
+ts=1
+
+apikey=db3b82ddadf3b1ed43eaa13dcb87676f // clé public
+443d066b85748584fbfdbb479c0a9e0ead5ad903 clé privé
+
+
+md5( 1443d066b85748584fbfdbb479c0a9e0ead5ad903db3b82ddadf3b1ed43eaa13dcb87676f )
+
+on obtient sur https://www.md5.fr/
+
+hash=f66990bf045030b3fe9f720694db430a
+
+
+Your public key
+db3b82ddadf3b1ed43eaa13dcb87676f
+
+Your private key
+443d066b85748584fbfdbb479c0a9e0ead5ad903
+
+https://gateway.marvel.com/v1/public/characters/
+1009362
+?apikey=db3b82ddadf3b1ed43eaa13dcb87676f
+$hash

@@ -1,90 +1,51 @@
-import app from 'firebase/compat/app';
+import app from "firebase/compat/app";
 
 //import * as firebase from 'firebase'
-import 'firebase/compat/auth'; // authentification de firebase
-import 'firebase/compat/firestore'; // base de données
-
-
+import "firebase/compat/auth"; // authentification de firebase
+import "firebase/compat/firestore"; // base de données
 
 const config = {
-    apiKey: "AIzaSyDB8FkqQo_lHKORHhDjTkMpdgmBcZqyTiM",
-    authDomain: "marvel-quiz-f534c.firebaseapp.com",
-    projectId: "marvel-quiz-f534c",
-    storageBucket: "marvel-quiz-f534c.appspot.com",
-    messagingSenderId: "462058194446",
-    appId: "1:462058194446:web:9cee6e20e8bbdcb49c9e5f"
-  };
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+};
 
-  class Firebase {
-    constructor() {
-        app.initializeApp(config);
-        this.auth = app.auth(); // authentification de firebase
-        this.db = app.firestore() // base de données de firebase
-    }
+class Firebase {
+  constructor() {
+    app.initializeApp(config);
+    this.auth = app.auth(); // authentification de firebase
+    this.db = app.firestore(); // base de données de firebase
+  }
 
-    // inscription
-    signupUser = (email, password) => 
+  // inscription
+  signupUser = (email, password) =>
     this.auth.createUserWithEmailAndPassword(email, password);
 
-    // Connexion
-    loginUser = (email, password) => 
+  // Connexion
+  loginUser = (email, password) =>
     this.auth.signInWithEmailAndPassword(email, password);
 
-    // Déconnexion
-    signoutUser = () => this.auth.signOut();
+  // Déconnexion
+  signoutUser = () => this.auth.signOut();
 
-    // Récupérer le mot de passe
-    passwordReset = email => this.auth.sendPasswordResetEmail(email); 
-    
+  // Récupérer le mot de passe
+  passwordReset = (email) => this.auth.sendPasswordResetEmail(email);
 
-    // firestore recupération des données id de l'utilisateur
-    user = uid => this.db.doc(`users/${uid}`);
+  // firestore recupération des données id de l'utilisateur
+  user = (uid) => this.db.doc(`users/${uid}`);
 }
 
-
-
-
-
 export default Firebase;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // class Firebase {
 //     constructor() {
 //         app.initializeApp(config);
 //     }
-//     //inscription 
+//     //inscription
 // signupUser = (email, password) =>
 // auth.createUserWithEmailAndPassword(email, password);
 
