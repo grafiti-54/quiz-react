@@ -3,6 +3,7 @@ import { FirebaseContext } from "../Firebase";
 import { useNavigate } from "react-router-dom"; //pour pouvoir utiliser la navigation entre les pages
 import Logout from "../Logout";
 import Quiz from "../Quiz";
+import Loader from "../Loader";
 
 const Welcome = () => {
   //recuperation des methodes de firebase pour s'inscrire se connecter et se deconnecter
@@ -47,10 +48,10 @@ const Welcome = () => {
   }, [userSession]);
 
   return userSession === null ? (
-    <Fragment>
-      <div className="loader"></div>
-      <p className="loaderText">Loading ... </p>
-    </Fragment>
+      <Loader 
+              loadingMsg={"Authentifiction en cours..."}
+              styling ={{textAlign: 'center' , color: '#FFFFFF'}} />
+    
   ) : (
     <div className="quiz-bg">
       <div className="container">

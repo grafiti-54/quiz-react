@@ -12,7 +12,6 @@ toast.configure();
  //recuperation des questions du quiz
 //utiliser les nom des levels present dans le fichier quizMarvel/index.js
 const initialState = {
-  levelNames: ["debutant", "confirme", "expert"],
   quizLevel: 0, // permet de savoir quel niveau de difficulté on est
   maxQuestions: 10, // nombre de question max du quiz sur le niveau de difficulté
   storedQuestions: [], // enregistrements des 10 questions necessaires au quiz
@@ -24,7 +23,10 @@ const initialState = {
   score: 0, // score de l'utilisateur
   showWelcomeMsg: false, // affichage du message de bienvenue
   quizEnd: false, // gestion de la fin de quiz selon le niveau de difficulté
+  percent: null // pourcentage de réussite du quiz
 };
+
+const levelNames = ["debutant", "confirme", "expert"];
 
 class Quiz extends Component {
   //constructeur
@@ -62,7 +64,7 @@ class Quiz extends Component {
     if (!this.state.showWelcomeMsg) {
       //on bloc le message de bienvenue une fois affiché
       this.setState({
-        showWelcomeMsg: true,
+        showWelcomeMsg: true
       });
       toast.warn(`Bienvenue ${pseudo} bonne chance`, {
         position: "top-right",
@@ -78,7 +80,7 @@ class Quiz extends Component {
 
   componentDidMount() {
     // incrémentation du niveau de la question
-    this.loadQuestions(this.state.levelNames[this.state.quizLevel]);
+    this.loadQuestions(levelNames[this.state.quizLevel]);
   }
 
   //gestion lors de la validation de la question pour passer a la question suivante
@@ -134,36 +136,46 @@ class Quiz extends Component {
 
   //grace a setState on a acces a componentDidUpdate
   componentDidUpdate(prevProps, prevState) {
+
+    const{
+      
+      maxQuestions, // nombre de question max du quiz sur le niveau de difficulté
+      storedQuestions, // enregistrements des 10 questions necessaires au quiz
+      idQuestion, // id de la question
+      score, // score de l'utilisateur
+      quizEnd, // gestion de la fin de quiz selon le niveau de difficulté
+      
+      } = this.state;
     // verifications des données avant la mise a jours du nouveau tableau
     if (
-      this.state.storedQuestions !== prevState.storedQuestions &&
-      this.state.storedQuestions.length > 0
+      storedQuestions !== prevState.storedQuestions &&
+      storedQuestions.length > 0
     ) {
       //console.log(this.state.storedQuestions[0]);
       this.setState({
-        question: this.state.storedQuestions[this.state.idQuestion].question, // recupération des questions
-        options: this.state.storedQuestions[this.state.idQuestion].options, // recupération des options (reponses)
+        question: storedQuestions[idQuestion].question, // recupération des questions
+        options: storedQuestions[idQuestion].options, // recupération des options (reponses)
       });
     }
     // on passe a la question suivante
     if (
-      this.state.idQuestion !== prevState.idQuestion &&
-      this.state.storedQuestions.length > 0
+      idQuestion !== prevState.idQuestion &&
+      storedQuestions.length > 0
     ) {
       this.setState({
-        question: this.state.storedQuestions[this.state.idQuestion].question, // recupération de la nouvelles question
-        options: this.state.storedQuestions[this.state.idQuestion].options, // recupération des options (reponses)
+        question: storedQuestions[idQuestion].question, // recupération de la nouvelles question
+        options: storedQuestions[idQuestion].options, // recupération des options (reponses)
         userAnswer: null, // on remet a null la reponse de l'utilisateur lors du passage à la question suivante
         btnDisabled: true, // on remet le bouton en disabled
       });
     }
 
-    if (this.state.quizEnd !== prevState.quizEnd) {
+    if (quizEnd !== prevState.quizEnd) {
       //console.log(this.state.score);
       //recuperation du pourcentage de bonne reponse obtenu par l'utilisateur
       const gradepercent = this.getPercentage(
-        this.state.maxQuestions,
-        this.state.score
+        maxQuestions,
+        score
       );
       this.gameOver(gradepercent);
     }
@@ -207,9 +219,9 @@ class Quiz extends Component {
 
   //fonction qui va permettre de passer au niveau de difficulté suivant
   loadLevelQuestions = (param) => {
-    this.setState({ ...this.initialState, quizLevel: param }); // recuperation de l'ensemble des données
+    this.setState({ ...initialState, quizLevel: param }); // recuperation de l'ensemble des données
 
-    this.loadQuestions(this.state.levelNames[param]); // on appel la fonction qui va permettre de charger les questions
+    this.loadQuestions(levelNames[param]); // on appel la fonction qui va permettre de charger les questions
   };
 
   //console.log(props.userData.pseudo);
@@ -218,13 +230,27 @@ class Quiz extends Component {
     //destructuration des données de l'utilisateur pour ne pas surcharger le code jsx
     //const {pseudo} = this.props.userData;
 
+    // variable récupérer depuis le constructeur et initialState
+  const{
+  quizLevel, // permet de savoir quel niveau de difficulté on est
+  maxQuestions, // nombre de question max du quiz sur le niveau de difficulté
+  question, // les questions
+  options, // les reponses possibles
+  idQuestion, // id de la question
+  btnDisabled, // bouton validation désactivé par défaut lorsque le quiz commence et que l'utilisateur n'as pas choisi de reponse
+  userAnswer, // reonse selectionné par l'utilisateur
+  score, // score de l'utilisateur
+  quizEnd, // gestion de la fin de quiz selon le niveau de difficulté
+  percent, // pourcentage de bonne reponse obtenu par l'utilisateur
+  } = this.state;
+
     //recupération des reponses pour le questionnaire a choix multiple (boucle)
-    const displayOptions = this.state.options.map((option, index) => {
+    const displayOptions = options.map((option, index) => {
       return (
         <p
           key={index}
           className={`answerOptions ${
-            this.state.userAnswer === option ? "selected" : null
+            userAnswer === option ? "selected" : null
           }`}
           onClick={() => this.submitAnswer(option)}
         >
@@ -235,14 +261,14 @@ class Quiz extends Component {
     });
 
     //lorsque le niveau de difficulté est atteint on affiche le composant de fin de quiz
-    return this.state.quizEnd ? (
+    return quizEnd ? (
       <QuizOver
         ref={this.storedDataRef} // passage en ref pour pouvoir recuperer les données du quiz dans le component QuizOver
-        levelNames={this.state.levelNames} // passage en ref pour pouvoir recuperer les noms des niveaux dans le component QuizOver
-        score={this.state.score} // passage en ref pour pouvoir recuperer le score de l'utilisateur dans le component QuizOver
-        maxQuestions={this.state.maxQuestions} // passage en ref pour pouvoir recuperer le nombre de question du quiz dans le component QuizOver
-        quizLevel={this.state.quizLevel} // passage en ref pour pouvoir recuperer le niveau de difficulté du quiz dans le component QuizOver
-        percent={this.state.percent} // passage en ref pour pouvoir recuperer le pourcentage de bonne reponse de l'utilisateur dans le component QuizOver
+        levelNames={levelNames} // passage en ref pour pouvoir recuperer les noms des niveaux dans le component QuizOver
+        score={score} // passage en ref pour pouvoir recuperer le score de l'utilisateur dans le component QuizOver
+        maxQuestions={maxQuestions} // passage en ref pour pouvoir recuperer le nombre de question du quiz dans le component QuizOver
+        quizLevel={quizLevel} // passage en ref pour pouvoir recuperer le niveau de difficulté du quiz dans le component QuizOver
+        percent={percent} // passage en ref pour pouvoir recuperer le pourcentage de bonne reponse de l'utilisateur dans le component QuizOver
         loadLevelQuestions={this.loadLevelQuestions} // passage en ref pour pouvoir recuperer la fonction loadLevelQuestions dans le component QuizOver et passer au niveau suivant de difficulté du quiz
       />
     ) : (
@@ -250,25 +276,25 @@ class Quiz extends Component {
       <Fragment>
         {/* <h2>Pseudo : {pseudo}</h2> */}
         <Levels
-          levelNames={this.state.levelNames} // passage en ref pour pouvoir recuperer les noms des niveaux dans le component Levels
-          quizLevel={this.state.quizLevel} // passage en ref pour pouvoir recuperer le niveau de difficulté du quiz dans le component Levels
+          levelNames={levelNames} // passage en ref pour pouvoir recuperer les noms des niveaux dans le component Levels
+          quizLevel={quizLevel} // passage en ref pour pouvoir recuperer le niveau de difficulté du quiz dans le component Levels
         />
         <ProgressBar
-          idQuestion={this.state.idQuestion}
-          maxQuestions={this.state.maxQuestions}
+          idQuestion={idQuestion}
+          maxQuestions={maxQuestions}
         />
 
-        <h2> {this.state.question}</h2>
+        <h2> {question}</h2>
         {displayOptions}
 
         <button
-          disabled={this.state.btnDisabled}
+          disabled={btnDisabled}
           className="btnSubmit"
           onClick={this.nextQuestion}
         >
-          {this.stateidQuestion === this.state.maxQuestions - 1
-            ? "Terminer"
-            : "Suivant"}
+          {idQuestion < maxQuestions - 1
+            ? "Suivant"
+            : "Terminer"}
         </button>
       </Fragment>
     );
